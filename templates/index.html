@@ -2,6 +2,13 @@
 <html>
 <head>
     <title>StatTeacher Toolkit</title>
+    <style>
+        .param-block {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
 
@@ -10,21 +17,175 @@
 <form action="/run_test" method="POST">
 
     <label>Select a Test:</label>
-    <select name="test_type">
+    <select name="test_type" id="test_type">
         <option value="z_test">Z-Test</option>
         <option value="t_test">One-Sample t-Test</option>
         <option value="independent_t_test">Independent t-Test</option>
         <option value="paired_t_test">Repeated t-Test</option>
         <option value="Independent_anova">One-Way Independent ANOVA</option>
         <option value="pearson_correlation">Pearson Correlation</option>
-        <option value="1_predictor_regression">1-Predictor Linear Regression</option>
+        <option value="simple_regression">1-Predictor Linear Regression</option>
     </select>
 
-    <br><br>
+    <!-- Z-TEST PARAMETERS -->
+    <div id="z_test_params" class="param-block">
+        <h3>Z-Test Parameters</h3>
+
+        <label>Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>Population Mean</label>
+        <input type="number" step="any" name="population_mean"><br>
+
+        <label>Population Standard Deviation</label>
+        <input type="number" step="any" name="population_std"><br>
+
+        <label>Sample Size</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Treatment Effect</label>
+        <input type="number" step="any" name="tx_effect"><br>
+
+        <label>Noise Standard Deviation</label>
+        <input type="number" step="any" name="noise_sd"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+        <label>Tail Type</label>
+        <select name="tail_type">
+            <option value="two_tailed">Two-Tailed</option>
+            <option value="one_tailed">One-Tailed</option>
+        </select>
+    </div>
+
+    <!-- T-TEST PARAMETERS -->
+    <div id="t_test_params" class="param-block">
+        <h3>One-Sample t-Test Parameters</h3>
+
+        <label>Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>Population Mean</label>
+        <input type="number" step="any" name="population_mean"><br>
+
+        <label>Population Standard Deviation</label>
+        <input type="number" step="any" name="population_std"><br>
+
+        <label>Sample Size</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Treatment Effect</label>
+        <input type="number" step="any" name="tx_effect"><br>
+
+        <label>Noise Standard Deviation</label>
+        <input type="number" step="any" name="noise_sd"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+        <label>Tail Type</label>
+        <select name="tail_type">
+            <option value="two_tailed">Two-Tailed</option>
+            <option value="one_tailed">One-Tailed</option>
+        </select>
+    </div>
+
+    <!-- Independent T-Test Parameters -->
+    <div id="independent_t_test_params" class="param-block">
+        <h3>Independent t-Test Parameters</h3>
+
+        <label>Dataset 1 Random Seed</label>
+        <input type="number" step="any" name="seed1"><br>
+
+        <label>Population Mean 1</label>
+        <input type="number" step="any" name="population_mean1"><br>
+
+        <label>Population Standard Deviation 1</label>
+        <input type="number" step="any" name="population_sd1"><br>
+
+        <label>Sample Size 1</label>
+        <input type="number" step="any" name="n1"><br>
+
+        <label>Dataset 2 Random Seed</label>
+        <input type="number" step="any" name="seed2"><br>
+
+        <label>Population Mean 2</label>
+        <input type="number" step="any" name="population_mean2"><br>
+
+        <label>Population Standard Deviation 2</label>
+        <input type="number" step="any" name="population_sd2"><br>
+
+        <label>Sample Size 2</label>
+        <input type="number" step="any" name="n2"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+        <label>Tail Type</label>
+        <select name="tail_type">
+            <option value="two_tailed">Two-Tailed</option>
+            <option value="one_tailed">One-Tailed</option>
+        </select>
+    </div>
+
+    <!-- Repeated T-Test Parameters -->
+    <div id="paired_t_test_params" class="param-block">
+        <h3>Repeated t-Test Parameters</h3>
+
+        <label>Pre Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>Population Mean</label>
+        <input type="number" step="any" name="population_mean"><br>
+
+        <label>Population Standard Deviation</label>
+        <input type="number" step="any" name="population_std"><br>
+
+        <label>Sample Size</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Treatment Effect</label>
+        <input type="number" step="any" name="tx_effect"><br>
+
+        <label>Noise Standard Deviation</label>
+        <input type="number" step="any" name="noise_sd"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+        <label>Tail Type</label>
+        <select name="tail_type">
+            <option value="two_tailed">Two-Tailed</option>
+            <option value="one_tailed">One-Tailed</option>
+        </select>
+    </div>
+
+    <!-- Submit Button -->
 
     <button type="submit">Generate Problem</button>
 
 </form>
+
+<script>
+    const testSelect = document.getElementById("test_type");
+    const paramBlocks = document.querySelectorAll(".param-block");
+
+    function updateVisibility() {
+        paramBlocks.forEach(block => {
+            const active = block.id === testSelect.value + "_params";
+            block.style.display = active ? "block" : "none";
+
+            // 🔑 Disable inputs in inactive blocks
+            block.querySelectorAll("input, select").forEach(el => {
+                el.disabled = !active;
+            });
+        });
+    }
+
+    updateVisibility();
+    testSelect.addEventListener("change", updateVisibility);
+</script>
 
 </body>
 </html>

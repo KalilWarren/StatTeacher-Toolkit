@@ -146,6 +146,7 @@ def generate_z_score_problem(dataset=None,
     if dataset == None:
         dataset = generate_normal_data(population_mean, population_std, n, seed)
         dataset = _apply_treatment(dataset, tx_effect, noise_sd)
+    n = len(dataset)
     sample_mean = np.mean(dataset)
     standard_error = population_std / np.sqrt(n)
     z = (sample_mean - population_mean) / standard_error
@@ -162,10 +163,11 @@ def generate_z_score_problem(dataset=None,
         results = "Fail to Reject Null"
     
     df_out = pd.DataFrame({
-        "Statistic": ["N", "Population SD", "Sample Mean", "Standard Error",
+        "Statistic": ["N", "Population Mean", "Population SD", "Sample Mean", "Standard Error",
                       "Z Score", "Z_Critical", "Decision","Cohen's d", "95% CI Upper",
                       "95% CI Lower"],
         "Value": [n,
+                  round(population_mean, 2),
                   round(population_std, 2),
                   round(sample_mean, 2),
                   round(standard_error, 2),
@@ -193,9 +195,9 @@ def generate_t_test_problem(dataset=None,
     cohen_d = (sample_mean - population_mean) / sample_std
     df = n - 1
     r_squared = (t**2) / (t**2 + df)
-    
-    t_critical =_t_critical(df)
-       
+
+    t_critical =_t_critical(df, alpha, two_tailed)
+
     CI_Upper = sample_mean + t_critical * standard_error
     CI_Lower = sample_mean - t_critical * standard_error
     
@@ -286,12 +288,12 @@ def generate_independent_t_test_problem(
     return dataset1, dataset2, df_out
 
 def generate_repeated_t_test_problem(
-        pre_dataset=None,
+        pre_dataset=None, post_dataset=None,
         population_mean=0, population_std=15, n=10, seed=None,
         tx_effect=5, noise_sd=3,
         alpha=0.05, two_tailed=True):
     
-    if pre_dataset == None:
+    if pre_dataset == None and post_dataset == None:
         pre_dataset = generate_normal_data(population_mean, population_std, n, seed)
         post_dataset = _apply_treatment(pre_dataset, tx_effect, noise_sd)
     
@@ -307,7 +309,7 @@ def generate_repeated_t_test_problem(
     df = n - 1
     cohen_d = mean_differences / std_differences
     r_squared = (t**2) / (t**2 + df)
-    t_critical = _t_critical(df)
+    t_critical = _t_critical(df, alpha, two_tailed)
     
     CI_Upper = mean_differences + t_critical * standard_error
     CI_Lower = mean_differences - t_critical * standard_error

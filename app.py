@@ -12,6 +12,9 @@ from toolkit.interface import (
 
 app = Flask(__name__)
 
+def get_float(name, default=None):
+    val = request.form.get(name)
+    return float(val) if val not in (None, "") else default
 
 @app.route("/", methods=["GET"])
 def index():
@@ -25,7 +28,24 @@ def run_test():
 
     # Z-TEST -------------------------------------------------
     if test_type == "z_test":
-        dataset, table = run_z_test()
+        population_mean = get_float("population_mean", 0)
+        population_std = get_float("population_std", 15)
+        n = int(get_float("n", 10))
+        tx_effect = get_float("tx_effect", 5)
+        noise_sd = get_float("noise_sd", 3)
+        alpha = get_float("alpha", 0.05)
+        two_tailed = request.form.get("tail_type") == "two_tailed"
+        seed = int(request.form.get("seed")) if request.form.get("seed") else None
+        dataset, table = run_z_test(
+            population_mean=population_mean,
+            population_std=population_std,
+            n=n,
+            tx_effect=tx_effect,
+            noise_sd=noise_sd,
+            alpha=alpha,
+            two_tailed=two_tailed,
+            seed=seed
+        )
         df1 = pd.DataFrame({"Dataset": dataset})
         return render_template(
             "results.html",
@@ -35,7 +55,24 @@ def run_test():
 
     # T-TEST -------------------------------------------------
     if test_type == "t_test":
-        dataset, table = run_t_test()
+        population_mean = get_float("population_mean", 0)
+        population_std = get_float("population_std", 15)
+        n = int(get_float("n", 10))
+        tx_effect = get_float("tx_effect", 5)
+        noise_sd = get_float("noise_sd", 3)
+        alpha = get_float("alpha", 0.05)
+        two_tailed = request.form.get("tail_type") == "two_tailed"
+        seed = int(request.form.get("seed")) if request.form.get("seed") else None
+        dataset, table = run_t_test(
+            population_mean=population_mean,
+            population_std=population_std,
+            n=n,
+            tx_effect=tx_effect,
+            noise_sd=noise_sd,
+            alpha=alpha,
+            two_tailed=two_tailed,
+            seed=seed
+        )
         df1 = pd.DataFrame({"Dataset": dataset})
         return render_template(
             "results.html",
@@ -45,7 +82,28 @@ def run_test():
     
     # Independent T-Test --------------------------------------
     if test_type == "independent_t_test":
-        dataset1, dataset2, table = run_independent_t_test()
+        population_mean1 = get_float("population_mean1", 10)
+        population_sd1 = get_float("population_sd1", 15)
+        n1 = int(get_float("n1", 10))
+        seed1 = int(request.form.get("seed1")) if request.form.get("seed1") else None
+        population_mean2 = get_float("population_mean2", 20)
+        population_sd2 = get_float("population_sd2", 15)
+        n2 = int(get_float("n2", 10))
+        seed2 = int(request.form.get("seed2")) if request.form.get("seed2") else None
+        alpha = get_float("alpha", 0.05)
+        two_tailed = request.form.get("tail_type") == "two_tailed"
+        dataset1, dataset2, table = run_independent_t_test(
+            population_mean1=population_mean1,
+            population_sd1=population_sd1,
+            n1=n1,
+            seed1=seed1,
+            population_mean2=population_mean2,
+            population_sd2=population_sd2,
+            n2=n2,
+            seed2=seed2,
+            alpha=alpha,
+            two_tailed=two_tailed
+        )
 
         df1 = pd.DataFrame({"Dataset 1": dataset1})
         df2 = pd.DataFrame({"Dataset 2": dataset2})
@@ -59,8 +117,25 @@ def run_test():
 
     # Repeated T-TEST ----------------------------------------
     if test_type == "paired_t_test":
-        predataset, postdataset, table = run_repeated_t_test()
-
+        population_mean = get_float("population_mean", 0)
+        population_std = get_float("population_std", 15)
+        n = int(get_float("n", 10))
+        tx_effect = get_float("tx_effect", 5)
+        noise_sd = get_float("noise_sd", 3)
+        alpha = get_float("alpha", 0.05)
+        two_tailed = request.form.get("tail_type") == "two_tailed"
+        seed = int(request.form.get("seed")) if request.form.get("seed") else None
+        
+        predataset, postdataset, table = run_repeated_t_test(
+            population_mean=population_mean,
+            population_std=population_std,
+            n=n,
+            tx_effect=tx_effect,
+            noise_sd=noise_sd,
+            alpha=alpha,
+            two_tailed=two_tailed,
+            seed=seed
+        )
         df1 = pd.DataFrame({"Pre-Treatment": predataset})
         df2 = pd.DataFrame({"Post-Treatment": postdataset})
 
