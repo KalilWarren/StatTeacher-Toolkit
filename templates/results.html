@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StatTeacher Toolkit – Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; margin-bottom: 30px; }
+        th, td { padding: 8px 12px; border: 1px solid #ccc; }
+        h2 { margin-top: 40px; }
+        .dataset-block { margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+<h1>Results</h1>
+
+<!-- SINGLE DATASET -->
+{% if dataset %}
+<div class="dataset-block">
+    <h2>Dataset</h2>
+    {{ dataset | safe }}
+</div>
+{% endif %}
+
+<!-- TWO DATASETS (independent t-test) -->
+{% if dataset1 and dataset2 %}
+<div class="dataset-block">
+    <h2>Dataset 1</h2>
+    {{ dataset1 | safe }}
+
+    <h2>Dataset 2</h2>
+    {{ dataset2 | safe }}
+</div>
+{% endif %}
+
+<!-- PRE / POST DATASETS (paired t-test) -->
+{% if predataset and postdataset %}
+<div class="dataset-block">
+    <h2>Pre-Treatment Dataset</h2>
+    {{ predataset | safe }}
+
+    <h2>Post-Treatment Dataset</h2>
+    {{ postdataset | safe }}
+</div>
+{% endif %}
+
+<!-- CORRELATION / REGRESSION DATASETS -->
+{% if test_type in ["pearson_correlation", "1_predictor_regression"] %}
+<div class="dataset-block">
+    <h2>X Dataset</h2>
+    {{ x_dataset | safe }}
+
+    <h2>Y Dataset</h2>
+    {{ y_dataset | safe }}
+</div>
+{% endif %}
+
+<!-- REGRESSION EQUATION -->
+{% if equation %}
+<div class="dataset-block">
+    <h2>Regression Equation</h2>
+    <p><strong>{{ equation }}</strong></p>
+</div>
+{% endif %}
+
+<!-- RESULTS TABLE -->
+{% if table_html %}
+<div class="dataset-block">
+    <h2>Statistical Results</h2>
+    {{ table_html | safe }}
+</div>
+{% endif %}
+
+<br>
+<a href="/">Run another analysis</a>
+
+</body>
+</html>

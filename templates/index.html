@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StatTeacher Toolkit</title>
+</head>
+<body>
+
+<h1>StatTeacher Toolkit</h1>
+
+<form action="/run_test" method="POST">
+
+    <label>Select a Test:</label>
+    <select name="test_type">
+        <option value="z_test">Z-Test</option>
+        <option value="t_test">One-Sample t-Test</option>
+        <option value="independent_t_test">Independent t-Test</option>
+        <option value="paired_t_test">Repeated t-Test</option>
+        <option value="Independent_anova">One-Way Independent ANOVA</option>
+        <option value="pearson_correlation">Pearson Correlation</option>
+        <option value="1_predictor_regression">1-Predictor Linear Regression</option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">Generate Problem</button>
+
+</form>
+
+</body>
+</html>

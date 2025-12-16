@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.env/
+
+# macOS
+.DS_Store
+
+# Flask
+instance/
+
+# Jupyter
+.ipynb_checkpoints/
