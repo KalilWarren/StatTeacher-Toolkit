@@ -161,8 +161,91 @@
         </select>
     </div>
 
-    <!-- Submit Button -->
+    <div id="Independent_anova_params" class="param-block">
+        <h3>One-Way Independent ANOVA Parameters</h3>
 
+        <label>Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>Factors (e.g., A:3, B:2)</label>
+        <input type="text" name="factors_dictionary" placeholder="A:3, B:2"><br>
+
+        <label>Sample Size per Group</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Population Mean</label>
+        <input type="number" step="any" name="mean"><br>
+
+        <label>Population Standard Deviation</label>
+        <input type="number" step="any" name="std"><br>
+
+        <label>Treatment Effect Size</label>
+        <input type="number" step="any" name="effect_size"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+    </div>
+
+    <div id="pearson_correlation_params" class="param-block">
+        <h3>Pearson Correlation Parameters</h3>
+
+        <label>Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>X Mean</label>
+        <input type="number" step="any" name="x_mean"><br>
+
+        <label>X Standard Deviation</label>
+        <input type="number" step="any" name="x_std"><br>
+
+        <label>Y Mean</label>
+        <input type="number" step="any" name="y_mean"><br>
+
+        <label>Y Standard Deviation</label>
+        <input type="number" step="any" name="y_std"><br>
+
+        <label>Sample Size</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Population Correlation Coefficient</label>
+        <input type="number" step="any" name="ro"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+
+        <label>Tail Type</label>
+        <select name="tail_type">
+            <option value="two_tailed">Two-Tailed</option>
+            <option value="one_tailed">One-Tailed</option>
+        </select>
+    
+    </div>
+
+    <div id="simple_regression_params" class="param-block">
+        <h3>1-Predictor Linear Regression Parameters</h3>
+
+        <label>Dataset Random Seed</label>
+        <input type="number" step="any" name="seed"><br>
+
+        <label>X Mean</label>
+        <input type="number" step="any" name="x_mean"><br>
+
+        <label>X Standard Deviation</label>
+        <input type="number" step="any" name="x_std"><br>
+
+        <label>Y Mean</label>
+        <input type="number" step="any" name="y_mean"><br>
+
+        <label>Y Standard Deviation</label>
+        <input type="number" step="any" name="y_std"><br>
+
+        <label>Sample Size</label>
+        <input type="number" step="any" name="n"><br>
+
+        <label>Alpha</label>
+        <input type="number" step="any" name="alpha"><br>
+    </div>
     <button type="submit">Generate Problem</button>
 
 </form>

@@ -494,11 +494,15 @@ def generate_pearson_correlation(x_dataset=None, y_dataset=None,
         })
     return x_dataset, y_dataset, df_out
 
-def generate_1_predictor_regression(x_mean=10, x_std=1, y_mean=20, y_std=3,
-                                 ro=0, n=10, alpha=0.05, seed=None):
-    x_dataset = generate_normal_data(x_mean, x_std, n, seed)
-    y_dataset = generate_normal_data(y_mean, y_std, n, seed)
-    y_dataset = _apply_treatment(y_dataset, effect=10)
+def generate_1_predictor_regression(x_dataset = None, y_dataset = None,
+                                    x_mean=10, x_std=1, y_mean=20, y_std=3,
+                                    n=10, alpha=0.05, seed=None):
+    
+    if x_dataset == None:
+        x_dataset = generate_normal_data(x_mean, x_std, n, seed)
+    if y_dataset == None:
+        y_dataset = generate_normal_data(y_mean, y_std, n, seed)
+        y_dataset = _apply_treatment(y_dataset, effect=10)
     
     mean_x = np.mean(x_dataset)
     mean_y = np.mean(y_dataset)

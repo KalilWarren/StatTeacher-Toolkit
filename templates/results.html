@@ -45,7 +45,7 @@
 {% endif %}
 
 <!-- CORRELATION / REGRESSION DATASETS -->
-{% if test_type in ["pearson_correlation", "1_predictor_regression"] %}
+{% if test_type in ["pearson_correlation", "simple_regression"] %}
 <div class="dataset-block">
     <h2>X Dataset</h2>
     {{ x_dataset | safe }}
@@ -69,6 +69,14 @@
     <h2>Statistical Results</h2>
     {{ table_html | safe }}
 </div>
+{% endif %}
+
+<br>
+<!-- DOWNLOAD BUTTON -->
+{% if show_download %}
+<form action="/download_dataset" method="get">
+    <button type="submit">Download Dataset (Excel)</button>
+</form>
 {% endif %}
 
 <br>

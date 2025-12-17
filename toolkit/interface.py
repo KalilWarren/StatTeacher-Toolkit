@@ -77,15 +77,45 @@ def run_repeated_t_test(pre_dataset=None, post_dataset=None,
     )
     return predataset, postdataset, results_table
 
-def run_independent_anova():
-    df, anova_table = generate_Independent_ANOVA()
+def run_independent_anova(factors_dictionary={"A":3, "B":2},
+                               n = 10, mean=10, std=2, alpha=0.05, 
+                               effect_size=2.0, seed=None):
+    df, anova_table = generate_Independent_ANOVA(factors_dictionary=factors_dictionary,
+                                                 n=n, mean=mean, std=std, alpha=alpha,
+                                                 effect_size=effect_size, seed=seed)
     return df, anova_table
 
-def run_pearson_correlation():
-    x_dataset, y_dataset, results_table = generate_pearson_correlation()
+def run_pearson_correlation(x_dataset=None, y_dataset=None, 
+                                 x_mean=10, x_std=1, y_mean=20, y_std=3,
+                                 ro=0, n=10, alpha=0.05, seed=None, two_tailed=True):
+    x_dataset, y_dataset, results_table = generate_pearson_correlation(
+        x_dataset=x_dataset,
+        y_dataset=y_dataset,
+        x_mean=x_mean,
+        x_std=x_std,
+        y_mean=y_mean,
+        y_std=y_std,
+        ro=ro,
+        n=n,
+        alpha=alpha,
+        seed=seed,
+        two_tailed=two_tailed
+    )
     return x_dataset, y_dataset, results_table
 
-def run_1_predictor_regression():
-    y_dataset, x_dataset, results_table, regression_equation = generate_1_predictor_regression()
+def run_1_predictor_regression(x_dataset = None, y_dataset = None,
+                                    x_mean=10, x_std=1, y_mean=20, y_std=3,
+                                    n=10, alpha=0.05, seed=None):
+    y_dataset, x_dataset, results_table, regression_equation = generate_1_predictor_regression(
+        x_dataset=x_dataset,
+        y_dataset=y_dataset,
+        x_mean=x_mean,
+        x_std=x_std,
+        y_mean=y_mean,
+        y_std=y_std,
+        n=n,
+        alpha=alpha,
+        seed=seed
+    )
     return y_dataset, x_dataset, results_table, regression_equation
 
