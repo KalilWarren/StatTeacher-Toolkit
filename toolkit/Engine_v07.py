@@ -13,11 +13,74 @@ from scipy.stats import t
 from scipy.stats import f
 import pandas as pd
 
-def generate_normal_data(mean=0, std=1, n=100, seed=None):
+def generate_normal_data(mean=0, std=1, n=100, seed=None, return_df=False):
     if seed is not None:
         np.random.seed(seed)
     data = np.random.normal(loc=mean, scale=std, size=n)
-    return np.round(data)   # round to 1 decimal place
+    sample_mean = np.mean(data)
+    sample_std = np.std(data, ddof=1)
+    sample_variance = sample_std ** 2
+    
+    df_out = pd.DataFrame({
+    "Statistic": [
+        "N",
+        "Population Mean",
+        "Population SD",
+        "Sample Mean",
+        "Sample SD",
+        "Sample Variance"
+    ],
+    "Value": [
+        n,
+        round(mean, 2),
+        round(std, 2),
+        round(sample_mean, 2),
+        round(sample_std, 2),
+        round(sample_variance, 2)
+    ]
+    })
+
+    if return_df == True:
+        return np.round(data), df_out
+    else:
+        return np.round(data)   # round to 1 decimal place
+
+def z_score_tranformation(data, rescale=False, new_mean=100, new_std=15):
+    z_scores = (data - np.mean(data)) / np.std(data,ddof=1)
+    if rescale == True:
+        z_scores = z_scores * new_std + new_mean
+    return np.round(z_scores, 3)
+
+def z_probability(lower=None, upper=None):
+    """
+    Compute probabilities for a standard normal Z.
+
+    Parameters
+    ----------
+    lower : float or None
+        Lower bound (exclusive). Use None for -inf.
+    upper : float or None
+        Upper bound (exclusive). Use None for +inf.
+
+    Returns
+    -------
+    float
+        Probability P(lower < Z < upper)
+    """
+    if lower is None and upper is None:
+        raise ValueError("At least one of lower or upper must be specified.")
+
+    if lower is None:
+        return norm.cdf(upper)
+
+    if upper is None:
+        return 1 - norm.cdf(lower)
+
+    if lower >= upper:
+        raise ValueError("lower must be less than upper.")
+
+    return norm.cdf(upper) - norm.cdf(lower)
+
 
 def _apply_treatment(pre_scores, effect=5, noise_sd=3):
     noise = np.random.normal(loc=0, scale=noise_sd, size=len(pre_scores))
@@ -143,7 +206,7 @@ def generate_z_score_problem(dataset=None,
                             population_mean=0,population_std=15, n=10, seed=None,
                             tx_effect=5, noise_sd=3,
                             alpha=0.05, two_tailed=True):
-    if dataset == None:
+    if dataset is None:
         dataset = generate_normal_data(population_mean, population_std, n, seed)
         dataset = _apply_treatment(dataset, tx_effect, noise_sd)
     n = len(dataset)
@@ -185,10 +248,10 @@ def generate_t_test_problem(dataset=None,
                             population_mean=0, population_std=15, n=10, seed=None,
                             tx_effect=5, noise_sd=3,
                             alpha=0.05, two_tailed=True):
-    if dataset == None:
+    if dataset is None:
         dataset = generate_normal_data(population_mean, population_std, n, seed)
         dataset = _apply_treatment(dataset, tx_effect, noise_sd)
-    sample_std = np.std(dataset)
+    sample_std = np.std(dataset,ddof=1)
     sample_mean = np.mean(dataset)
     standard_error = sample_std / np.sqrt(n)
     t = (sample_mean - population_mean) / standard_error
@@ -230,13 +293,13 @@ def generate_independent_t_test_problem(
         population_mean1=10, population_sd1=15, n1=10, seed1=None,
         population_mean2=20, population_sd2=15, n2=10, seed2=None,
         alpha=0.05, two_tailed=True):
-    if dataset1 == None:
+    if dataset1 is None:
         dataset1 = generate_normal_data(population_mean1, population_sd1, n1, seed1)
-    if dataset2 == None:
+    if dataset2 is None:
         dataset2 = generate_normal_data(population_mean2, population_sd2, n2, seed2)
-    sample_std1 = np.std(dataset1)
+    sample_std1 = np.std(dataset1,ddof=1)
     sample_mean1 = np.mean(dataset1)
-    sample_std2 = np.std(dataset2)
+    sample_std2 = np.std(dataset2,ddof=1)
     sample_mean2 = np.mean(dataset2)
     df1 = n1 - 1
     df2 = n2 - 1
@@ -293,7 +356,7 @@ def generate_repeated_t_test_problem(
         tx_effect=5, noise_sd=3,
         alpha=0.05, two_tailed=True):
     
-    if pre_dataset == None and post_dataset == None:
+    if pre_dataset is None and post_dataset is None:
         pre_dataset = generate_normal_data(population_mean, population_std, n, seed)
         post_dataset = _apply_treatment(pre_dataset, tx_effect, noise_sd)
     
@@ -303,7 +366,7 @@ def generate_repeated_t_test_problem(
         differences.append(d)
     
     mean_differences = np.mean(differences)
-    std_differences = np.std(differences)
+    std_differences = np.std(differences,ddof=1)
     standard_error = std_differences / np.sqrt(n)
     t = mean_differences / standard_error
     df = n - 1
@@ -447,9 +510,9 @@ def generate_pearson_correlation(x_dataset=None, y_dataset=None,
                                  x_mean=10, x_std=1, y_mean=20, y_std=3,
                                  ro=0, n=10, alpha=0.05, seed=None, two_tailed=True):
     
-    if x_dataset == None:
+    if x_dataset is None:
         x_dataset = generate_normal_data(x_mean, x_std, n, seed)
-    if y_dataset == None:
+    if y_dataset is None:
         y_dataset = generate_normal_data(y_mean, y_std, n, seed)
         y_dataset = _apply_treatment(y_dataset, effect=10)
     
@@ -498,9 +561,9 @@ def generate_1_predictor_regression(x_dataset = None, y_dataset = None,
                                     x_mean=10, x_std=1, y_mean=20, y_std=3,
                                     n=10, alpha=0.05, seed=None):
     
-    if x_dataset == None:
+    if x_dataset is None:
         x_dataset = generate_normal_data(x_mean, x_std, n, seed)
-    if y_dataset == None:
+    if y_dataset is None:
         y_dataset = generate_normal_data(y_mean, y_std, n, seed)
         y_dataset = _apply_treatment(y_dataset, effect=10)
     
@@ -565,4 +628,6 @@ def generate_1_predictor_regression(x_dataset = None, y_dataset = None,
     
     return y_dataset, x_dataset, pd.DataFrame(rows), regression_equation
 
+if __name__ == "__main__":
+    pass
 
