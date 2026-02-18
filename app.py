@@ -17,6 +17,19 @@ app.secret_key = "statteacher-dev-key"
 
 @app.route("/download_dataset")
 def download_dataset():
+    """
+    Flask route: export the most recent test results as a timestamped Excel file.
+
+    Reads the serialized DataFrames stored in the Flask session under
+    "excel_payload" and writes each entry as a separate sheet in an in-memory
+    .xlsx workbook. Streams the file to the browser as a download attachment.
+
+    Returns
+    -------
+    flask.Response
+        An Excel file (.xlsx) download response, or a plain-text error message
+        if no dataset is available in the current session.
+    """
 
     if "excel_payload" not in session:
         return "No dataset available for download."
@@ -49,6 +62,21 @@ def download_dataset():
 
 
 def get_float(name, default=None):
+    """
+    Safely parse a float value from the current request form.
+
+    Parameters
+    ----------
+    name : str
+        The form field name to read.
+    default : float or None, optional
+        Value to return if the field is absent or empty. Default is None.
+
+    Returns
+    -------
+    float or None
+        The parsed float value, or `default` if the field was missing/empty.
+    """
     val = request.form.get(name)
     return float(val) if val not in (None, "") else default
 
@@ -89,11 +117,44 @@ def parse_factors_string(factors_str):
 
 @app.route("/", methods=["GET"])
 def index():
+    """
+    Flask route: render the main parameter-entry form.
+
+    Returns
+    -------
+    flask.Response
+        Rendered index.html template with the test-selection form.
+    """
     return render_template("index.html")
 
 
 @app.route("/run_test", methods=["POST"])
 def run_test():
+    """
+    Flask route: execute the selected statistical test and render the results page.
+
+    Reads parameters from the submitted form, delegates to the appropriate
+    interface function (run_z_test, run_t_test, etc.), stores the resulting
+    DataFrames in the session for later Excel export, and renders results.html
+    with the dataset and statistics tables.
+
+    Supported test_type values
+    --------------------------
+    - "z_test"             : One-sample Z-test
+    - "t_test"             : One-sample t-test
+    - "independent_t_test" : Independent-samples t-test
+    - "paired_t_test"      : Repeated-measures (paired) t-test
+    - "Independent_anova"  : Independent-groups ANOVA (one-way or factorial)
+    - "pearson_correlation": Pearson correlation
+    - "simple_regression"  : One-predictor linear regression
+
+    Returns
+    -------
+    flask.Response
+        Rendered results.html template with HTML tables for the dataset and
+        statistical results, or a plain-text error message for an unrecognized
+        test type or invalid ANOVA factors string.
+    """
 
     test_type = request.form.get("test_type")
 
