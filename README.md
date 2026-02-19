@@ -1,5 +1,11 @@
 # StatTeacher Toolkit
 
+> **This repository is no longer actively maintained.**
+> Development has moved to [kalilwarren.github.io/toolkit.html](https://kalilwarren.github.io/toolkit.html).
+> This codebase is preserved here as a legacy reference.
+
+---
+
 A Flask-based web application for generating statistical hypothesis-testing practice problems. Instructors and students can configure parameters, generate synthetic datasets, and instantly see step-by-step results — including test statistics, critical values, effect sizes, confidence intervals, and a pass/fail decision — all exportable to Excel.
 
 ---
